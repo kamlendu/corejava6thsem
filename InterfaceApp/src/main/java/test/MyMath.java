@@ -19,6 +19,13 @@ public class MyMath implements Calculable, Stringable{
         return Calculable.PI;
     }
 
+//    @Override
+//    public double getNum() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+
+    
+    
     public void setPi(double pi) {
         this.pi = pi;
     }
