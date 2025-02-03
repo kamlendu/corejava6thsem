@@ -4,34 +4,26 @@
  */
 package threads;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author root
  */
-public class MyThread extends Thread {
+public class Printed {
     
-  
-
-    public MyThread(String name) {
-        super(name);
-       
-    }
-
-    @Override
-    public void run() {
-        //super.run(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-    print();
-    
-    }
-    
-    
-    private void print()
+   synchronized public void print()
     {
         for(int i= 0; i<6; i++)
         {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AnotherThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
             System.out.println(Thread.currentThread().getName()+ " Value of i = "+ i);
         }
     }
-    
     
 }
