@@ -35,6 +35,7 @@ public class RandomAccessFileExample {
 		raFile.seek(raFile.length());
 		System.out.println("current pointer = "+raFile.getFilePointer());
 		raFile.write(data.getBytes());
+                
 		raFile.close();
 		
 	}

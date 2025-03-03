@@ -45,8 +45,8 @@ public class ThreadApp {
 //Thread mt1 = new Thread(new AnotherThread(p),"One");
 //Thread mt2 = new Thread(new AnotherThread(p),"Two");
 //Thread mt3 = new Thread(new AnotherThread(p),"Three");
-//
-////mt1.setPriority(Thread.MAX_PRIORITY);
+////
+//////mt1.setPriority(Thread.MAX_PRIORITY);
 //mt1.start();
 //mt2.start();
 //mt3.start();

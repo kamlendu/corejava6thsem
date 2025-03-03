@@ -61,6 +61,7 @@ public class JdbcApp {
     
     public void showData() throws SQLException
     {
+        //String sql = "select * from employee where ename like ?"
         stmt = con.createStatement();
         
      rs =   stmt.executeQuery("select * from employee");
@@ -71,6 +72,24 @@ public class JdbcApp {
          System.out.println(rs.getString(1)+"\t"+ rs.getString(2)+"\t"+ rs.getString(3));
      }
      
+       showStats(); 
+    }
+    
+    
+    void showStats() throws SQLException
+    {
+        CallableStatement csmt = con.prepareCall("{call gross_sal(?)}");
+        csmt.registerOutParameter(1, java.sql.Types.DOUBLE);
+        csmt.executeQuery();
+        
+        System.out.println("Gross Sum of  Salary : "+ csmt.getDouble(1));
+        
+        CallableStatement csmt1 = con.prepareCall("{?= call maxsal()}");
+        csmt1.registerOutParameter(1, java.sql.Types.DOUBLE);
+       // csmt1.setDouble(1, 0.0);
+        csmt1.execute();
+        
+        System.out.println("Max : "+ csmt1.getDouble(1));
         
     }
     

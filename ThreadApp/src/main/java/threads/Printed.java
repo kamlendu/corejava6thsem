@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class Printed {
     
-   synchronized public void print()
+ synchronized   public void print()
     {
         for(int i= 0; i<6; i++)
         {
