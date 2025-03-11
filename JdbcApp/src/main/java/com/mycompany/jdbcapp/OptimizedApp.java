@@ -1,24 +1,31 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 package com.mycompany.jdbcapp;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  *
  * @author root
  */
-public class JdbcApp {
-    
+public class OptimizedApp {
     Connection con;
     Statement stmt;
     ResultSet rs;
     
 
-    public JdbcApp() {
+    public OptimizedApp() {
         
         try {
             // Loading the Driver
@@ -48,10 +55,16 @@ public class JdbcApp {
     public static void main(String[] args) {
         
         try {
-            JdbcApp app = new JdbcApp();
+            OptimizedApp app = new OptimizedApp();
             
-          //  app.insertData(26, "Deepak", 34000);
+            //app.insertData(27, "Prateek", 38000);
+            //app.deleteData(26);
+            app.deleteBatch();
             app.showData();
+            
+            System.out.println("The gross sum of salaries is "+ app.getSumOfSalaries());
+            System.out.println("The maximum salary is "+ app.getMaxSalary());
+            
             
             System.out.println("Hello World!");
         } catch (SQLException ex) {
@@ -94,11 +107,15 @@ public class JdbcApp {
     
     void insertData(int empid, String ename, double sal) throws SQLException
     {
-        String inquery = "insert into employee values("+ empid + ",'"+ ename+ "',"+ sal+")";
+        String inquery = "insert into employee values(?,?,?)";
     
-        Statement stmt = con.createStatement();
+        PreparedStatement stmt = con.prepareStatement(inquery);
+        stmt.setInt(1, empid);
+        stmt.setString(2, ename);
+        stmt.setDouble(3, sal);
+        
     
-            stmt.executeUpdate(inquery);
+            stmt.executeUpdate();
            
           //  con.commit();
     
@@ -106,33 +123,70 @@ public class JdbcApp {
     
     void deleteData(int empid) throws SQLException
     {
-        String delquery = "delete from employee where empno="+ empid;
+        String delquery = "delete from employee where empno=?";
     
-        Statement stmt = con.createStatement();
+        PreparedStatement stmt = con.prepareStatement(delquery) ;
+    stmt.setInt(1, empid);
     
-            stmt.executeUpdate(delquery);
+    
+    
+            stmt.executeUpdate();
            
           //  con.commit();
     
     }
     
     
-    void showStats() throws SQLException
+     void deleteBatch() throws SQLException
     {
-        CallableStatement csmt = con.prepareCall("{call gross_sal(?)}");
-        csmt.registerOutParameter(1, java.sql.Types.DOUBLE);
-        csmt.executeQuery();
-        
-        System.out.println("Gross Sum of  Salary : "+ csmt.getDouble(1));
-        
-        CallableStatement csmt1 = con.prepareCall("{?= call maxsal()}");
-        csmt1.registerOutParameter(1, java.sql.Types.DOUBLE);
-       // csmt1.setDouble(1, 0.0);
-        csmt1.execute();
-        
-        System.out.println("Max : "+ csmt1.getDouble(1));
-        
+        String delquery = "delete from employee where empno=?";
+    
+        PreparedStatement stmt = con.prepareStatement(delquery) ;
+    stmt.setInt(1, 10);
+    stmt.addBatch();
+     stmt.setInt(1, 12);
+    stmt.addBatch(); 
+    stmt.setInt(1, 15);
+    stmt.addBatch(); 
+    stmt.setInt(1, 20);
+    stmt.addBatch(); 
+    stmt.setInt(1, 25);
+    stmt.addBatch();
+    
+    stmt.executeBatch();
+    
+    
+    
+            stmt.executeUpdate();
+           
+          //  con.commit();
+    
     }
+     
+     
+     
+     double getSumOfSalaries() throws SQLException
+     {
+         CallableStatement csmt = con.prepareCall("{call gross_sal(?)}");
+         csmt.registerOutParameter(1, java.sql.Types.DOUBLE);
+         csmt.executeQuery();
+         
+         
+         
+         return csmt.getDouble(1);
+     }
+     
+     double getMaxSalary() throws SQLException
+     {
+         CallableStatement csmt = con.prepareCall("{?=call maxsal()}");
+         csmt.registerOutParameter(1, java.sql.Types.DOUBLE);
+         csmt.execute();
+         
+         
+         
+         return csmt.getDouble(1);
+     }
+     
     
     
 }
