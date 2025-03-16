@@ -1,7 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-
 package com.mycompany.ioapp;
 
 import java.io.BufferedReader;
@@ -18,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 
 /**
  *
@@ -25,67 +25,102 @@ import java.io.PrintWriter;
  */
 public class IOApp {
 
-    public static void main(String[] args) throws IOException , ClassNotFoundException {
-        
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+
         IOApp app = new IOApp();
-        
-            //app.ShowFilesAndDirectories();
-            //app.readAndWriteFromConsole();
-           // app.readAndWriteBytes();
-      // app.readAndWriteFromFiles();
-      
-      //app.readAndWriteData();
-      app.readAndWriteObjects();
-       
+
+        //app.ShowFilesAndDirectories();
+        //app.readAndWriteFromConsole();
+        // app.readAndWriteBytes();
+        // app.readAndWriteFromFiles();
+        //app.readAndWriteData();
+        // app.readAndWriteObjects();
+        app.randomAccess();
         System.out.println("Hello World!");
     }
     
     
-   public void readAndWriteObjects() throws IOException, ClassNotFoundException
-   {
-        Employee  e1= new Employee(1,"prakash",30000);
-        Employee  e2= new Employee(2,"suresh",40000);
-        Employee  e3= new Employee(3,"mukesh",10000);
-        Employee  e4= new Employee(4,"lokesh",50000);
-        Employee  e5= new Employee(5,"arvind",60000);
+    
+    public void randomAccess() throws IOException
+    {
+        RandomAccessFile ra = new  RandomAccessFile("/root/corejava/random.txt", "rw");
         
+        ra.seek(0);
+        byte[] b = new byte[5];
+        ra.read(b);
+        
+        System.out.println(new String(b));
+        
+        ra.seek(5);
+        ra.write("MyData".getBytes());
+        
+        ra.seek(ra.length());
+         ra.write("AppendData".getBytes());
+         
+         ra.seek(5);
+         
+         byte[] c = new byte[8];
+         ra.read(c);
+          System.out.println(new String(c));
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    // Operation for Serialization, ObjectInputStream and ObjectOutputStream 
+    public void readAndWriteObjects() throws IOException, ClassNotFoundException {
+        Employee e1 = new Employee(1, "prakash", 30000);
+        Employee e2 = new Employee(2, "suresh", 40000);
+        Employee e3 = new Employee(3, "mukesh", 10000);
+        Employee e4 = new Employee(4, "lokesh", 50000);
+        Employee e5 = new Employee(5, "arvind", 60000);
+
         FileOutputStream fo = new FileOutputStream("/root/corejava/employeeout.txt");
         FileInputStream fi = new FileInputStream("/root/corejava/employeeout.txt");
-        
+
         ObjectOutputStream os = new ObjectOutputStream(fo);
-        
-        os.writeObject(e1);os.writeObject(e2);os.writeObject(e3);os.writeObject(e4);os.writeObject(e5);
-      
+
+        os.writeObject(e1);
+        os.writeObject(e2);
+        os.writeObject(e3);
+        os.writeObject(e4);
+        os.writeObject(e5);
+
         ObjectInputStream oi = new ObjectInputStream(fi);
-     
-        Employee e=null;
-     
-      
-      while(true)
-      {
-          try{
-         // e = (Employee)oi.readObject();
-         e = (Employee)oi.readObject() ;
-         System.out.println(e.toString());
-         }
-     catch(EOFException ex )
-     {
-         break;
-     }
-      }
-       
-     
-   }
-    
-    
-    public void readAndWriteData() throws IOException
-    {
-         FileInputStream fi = new FileInputStream("/root/corejava/emp.dat");
+
+        Employee e = null;
+
+        while (true) {
+            try {
+                // e = (Employee)oi.readObject();
+                e = (Employee) oi.readObject();
+                System.out.println(e.toString());
+            } catch (EOFException ex) {
+                break;
+            }
+        }
+
+    }
+// DataInputStream and DataOutputStream
+    public void readAndWriteData() throws IOException {
+        FileInputStream fi = new FileInputStream("/root/corejava/emp.dat");
         FileOutputStream fo = new FileOutputStream("/root/corejava/emp.dat");
-        
+
         DataInputStream din = new DataInputStream(fi);
         DataOutputStream dout = new DataOutputStream(fo);
-        
+
         dout.writeInt(1);
         dout.writeUTF("Prakash");
         dout.writeDouble(6000);
@@ -95,141 +130,105 @@ public class IOApp {
         dout.writeInt(3);
         dout.writeUTF("Pooja");
         dout.writeDouble(8000);
-        
-        while(true)
-        {
-            try{
-            System.out.println("Empno : "+ din.readInt());
-           System.out.println("Ename : "+ din.readUTF());
-           System.out.println("Salary : "+ din.readDouble());
-            }
-            catch(EOFException e)
-            {
+
+        while (true) {
+            try {
+                System.out.println("Empno : " + din.readInt());
+                System.out.println("Ename : " + din.readUTF());
+                System.out.println("Salary : " + din.readDouble());
+            } catch (EOFException e) {
                 break;
             }
         }
-        
-        
-        
-        
+
     }
-    
-    
-    
-    public void readAndWriteFromFiles() throws IOException
-    {
-       
+
+    // FileInputStream and FileOutputStream
+    public void readAndWriteFromFiles() throws IOException {
+
         FileInputStream fi = new FileInputStream("/root/corejava/uni.txt");
         FileOutputStream fo = new FileOutputStream("/root/corejava/uniout.txt");
         int i;
-         while((i= fi.read())!=-1)
-         {
-        
-             fo.write(i);
-        
-         }
+        while ((i = fi.read()) != -1) {
+
+            fo.write(i);
+
+        }
     }
-    
-    
-    public void readAndWriteBytes() throws IOException
-    {
+// ByteArrayInputStream and ByteArrayOutputStream
+    public void readAndWriteBytes() throws IOException {
         String s = "abcdefghijklmnopqrstuvwxyz";
         byte[] b = s.getBytes();
-        
+
         ByteArrayInputStream bi = new ByteArrayInputStream(b);
         ByteArrayOutputStream bo = new ByteArrayOutputStream();
-        
+
         int i;
-        while((i= bi.read())!=-1)
-        {
-            System.out.println((char)i);
-            
+        while ((i = bi.read()) != -1) {
+            System.out.println((char) i);
+
             bo.write(i);
         }
-        
+
         System.out.println(bo.toString());
-        
+
     }
-    
-    
-    
-    void readAndWriteFromConsole()
-    {
+
+    // BufferedReader and PrintWriter
+    void readAndWriteFromConsole() {
         // Reading and Writing data from Console
-        try{
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        char c;
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            char c;
 //        while((c= (char) reader.read()) !='q')
 //        {
 //            System.out.println("The char is "+ c);
 //        }
 //        
-        System.out.println("Enter your Name : ");
-        String s = reader.readLine();
-    
-        PrintWriter p = new PrintWriter(System.out,true);
-        
-        
-        p.write("Name is  : "+ s);
+            System.out.println("Enter your Name : ");
+            String s = reader.readLine();
 
-        }
-        catch(IOException ei)
-        {
+            PrintWriter p = new PrintWriter(System.out, true);
+
+            p.write("Name is  : " + s);
+
+        } catch (IOException ei) {
             ei.printStackTrace();
         }
-        
+
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    void ShowFilesAndDirectories()
-    {
-        
+
+    // Files and Directories
+    void ShowFilesAndDirectories() {
+
         File f = new File("/root");
-        
+
         System.out.println(f.getName());
-        if(f.isDirectory())
-            System.out.println(f.getName()+ "is a  directory");
-        else
-           System.out.println(f.getName()+ "is a  file"); 
-        
-         System.out.println(f.getParent());   
-         
-         File files[] = f.listFiles();
-         
-         for(File f1 : files)
-         {
-              listAll(f1);
-         }
-    
+        if (f.isDirectory()) {
+            System.out.println(f.getName() + "is a  directory");
+        } else {
+            System.out.println(f.getName() + "is a  file");
+        }
 
+        System.out.println(f.getParent());
 
+        File files[] = f.listFiles();
+
+        for (File f1 : files) {
+            listAll(f1);
+        }
 
     }
-    
-    
-    void listAll(File f1 )
-    {
-       if(f1.isDirectory())
-       {
-           System.out.println(f1.getName());
-           for(File f : f1.listFiles())
-           {
-               listAll(f);
-           }
-       }
-       else
-           System.out.println("----" + f1.getName());
-           
-            
-   }
+
+    void listAll(File f1) {
+        if (f1.isDirectory()) {
+            System.out.println(f1.getName());
+            for (File f : f1.listFiles()) {
+                listAll(f);
+            }
+        } else {
+            System.out.println("----" + f1.getName());
+        }
+
+    }
 }
